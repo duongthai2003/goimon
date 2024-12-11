@@ -31,7 +31,7 @@ export const Login = ({}) => {
   return (
     <div className="h-screen">
       <form
-        className=" max-w-[400px] m-auto border border-secondary px-6 py-5 rounded-[15px] mt-40"
+        className=" max-w-[400px] m-auto border border-[#ccc] px-6 py-5 rounded-[15px] mt-40"
         onSubmit={handleSubmit(onSubmit)}
       >
         <p className="text-[25px] font-medium text-center">Đăng Nhập</p>
@@ -44,7 +44,7 @@ export const Login = ({}) => {
             )}
           </label>
           <label htmlFor="Password">
-            <p className="mb-3">Password</p>
+            <p className="mt-3">Password</p>
             <Input id="password" {...register("password")} />
             {errors.password && (
               <ErrorMessage title={errors.password?.message} className="mt-3" />
