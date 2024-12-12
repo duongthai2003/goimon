@@ -5,16 +5,17 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import HTTP from "@/lib/http";
 const regidterFormSchema = z
   .object({
     name: z.string().min(1, { message: "Vui lòng nhập tên" }),
     email: z.string().min(1, { message: "Vui lòng nhập email" }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
-    comfirmPassword: z.string().min(1, { message: "Nhập lại mật khẩu" }),
+    confirmPassword: z.string().min(1, { message: "Nhập lại mật khẩu" }),
   })
-  .refine((data) => data.password === data.comfirmPassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "mật khẩu chua khớp",
-    path: ["comfirmPassword"],
+    path: ["confirmPassword"],
   });
 
 const Register = ({}) => {
@@ -26,8 +27,11 @@ const Register = ({}) => {
     resolver: zodResolver(regidterFormSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof regidterFormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof regidterFormSchema>) => {
     try {
+      await HTTP.post("/auth/register", {
+        ...data,
+      });
       console.log(data);
     } catch (err) {
       console.log(err);
@@ -67,11 +71,11 @@ const Register = ({}) => {
             <Input
               type="password"
               id="rePassword"
-              {...register("comfirmPassword")}
+              {...register("confirmPassword")}
             />
-            {errors.comfirmPassword && (
+            {errors.confirmPassword && (
               <ErrorMessage
-                title={errors.comfirmPassword?.message}
+                title={errors.confirmPassword?.message}
                 className="mt-3"
               />
             )}

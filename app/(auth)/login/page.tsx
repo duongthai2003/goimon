@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "../_components/ErrorMessage";
+import HTTP from "@/lib/http";
 
 const loginFormSchema = z.object({
   email: z.string().min(1, { message: "con mẹ mày nhập vào đây" }),
@@ -23,7 +24,11 @@ export const Login = ({}) => {
   });
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     try {
-      console.log(data);
+      const res = await HTTP.post("/auth/login", {
+        ...data,
+      });
+      localStorage.setItem("accessToken", res.data.data.token);
+      console.log(res.data.data);
     } catch (err) {
       console.log(err);
     }
