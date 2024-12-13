@@ -6,6 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import HTTP from "@/lib/http";
+import { useRouter } from "next/navigation";
+import { getToastBody } from "@/app/(root)/_components/ToastBody";
+import { useToast } from "@/hooks/use-toast";
 const regidterFormSchema = z
   .object({
     name: z.string().min(1, { message: "Vui lòng nhập tên" }),
@@ -19,6 +22,8 @@ const regidterFormSchema = z
   });
 
 const Register = ({}) => {
+  const router = useRouter();
+  const { toast } = useToast();
   const {
     handleSubmit,
     formState: { errors },
@@ -29,10 +34,14 @@ const Register = ({}) => {
 
   const onSubmit = async (data: z.infer<typeof regidterFormSchema>) => {
     try {
-      await HTTP.post("/auth/register", {
+      const res = await HTTP.post("/auth/register", {
         ...data,
       });
-      console.log(data);
+      localStorage.setItem("accessToken", res.data.data.token);
+      toast({
+        description: getToastBody("success", "Đăng ký thành công"),
+      });
+      router.push("/");
     } catch (err) {
       console.log(err);
     }

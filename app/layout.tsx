@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Hearder from "./(root)/_components/Header";
+import { Toaster } from "@/components/ui/toaster";
 
 const interFont = Inter({ subsets: ["vietnamese"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             <Hearder />
             {children}
           </ThemeProvider>
+          <Toaster />
         </div>
       </body>
     </html>

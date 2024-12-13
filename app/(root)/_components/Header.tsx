@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 export const Hearder = ({}) => {
   const { setTheme, theme } = useTheme();
   const router = useRouter();
-  console.log(process.env.NEXT_PUBLIC_API_ENPOINT);
   const lightIcon = () => {
     if (window) {
       return theme === "light" ? (
