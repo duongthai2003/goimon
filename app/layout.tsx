@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Hearder from "./(root)/_components/Header";
 import { Toaster } from "@/components/ui/toaster";
+import ReactQueryProvider from "@/provider";
 
 const interFont = Inter({ subsets: ["vietnamese"] });
 
@@ -21,18 +22,20 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={`${interFont.className}`}>
-        <div>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Hearder />
-            {children}
-          </ThemeProvider>
-          <Toaster />
-        </div>
+        <ReactQueryProvider>
+          <div>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Hearder />
+              {children}
+            </ThemeProvider>
+            <Toaster />
+          </div>
+        </ReactQueryProvider>
       </body>
     </html>
   );

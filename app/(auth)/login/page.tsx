@@ -7,10 +7,9 @@ import { z } from "zod";
 import { ErrorMessage } from "../_components/ErrorMessage";
 import HTTP from "@/lib/http";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getToastBody } from "@/app/(root)/_components/ToastBody";
-import { getuser } from "@/app/hook/useUser";
 
 const loginFormSchema = z.object({
   email: z.string().min(1, { message: "con mẹ mày nhập vào đây" }),
@@ -20,11 +19,6 @@ const loginFormSchema = z.object({
 });
 
 export const Login = ({}) => {
-  // const { data, inc } = getuser();
-  const { user } = getuser();
-
-  console.log(user);
-
   const router = useRouter();
   const { toast } = useToast();
   const [errorMessage, setErrorMessage] = useState<string>("");
