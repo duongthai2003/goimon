@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "../_components/ErrorMessage";
-import HTTP from "@/lib/http";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getToastBody } from "@/app/(root)/_components/ToastBody";
+import { getCurentUser } from "@/app/hook/contextUser";
+import { LoginApi } from "@/app/hook/useUser";
 
 const loginFormSchema = z.object({
   email: z.string().min(1, { message: "con mẹ mày nhập vào đây" }),
@@ -19,6 +20,7 @@ const loginFormSchema = z.object({
 });
 
 export const Login = ({}) => {
+  const { fetchUser } = getCurentUser();
   const router = useRouter();
   const { toast } = useToast();
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -31,18 +33,18 @@ export const Login = ({}) => {
   });
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     try {
-      const res = await HTTP.post("/auth/login", {
-        ...data,
-      });
-      localStorage.setItem("accessToken", res.data.data.token);
+      await LoginApi(data);
+      fetchUser();
       router.push("/");
       toast({
         description: getToastBody("success", "Đăng nhập thành công"),
+        duration: 1000,
       });
     } catch (err) {
       console.log(err);
       toast({
         description: getToastBody("error", "Đăng nhập thất bại"),
+        duration: 1000,
       });
       setErrorMessage("Email hoac mat khau khoong chinh xac");
     }
@@ -60,7 +62,12 @@ export const Login = ({}) => {
         <div>
           <label htmlFor="email">
             <p className="mb-3">Email</p>
-            <Input type="email" id="email" {...register("email")} />
+            <Input
+              type="email"
+              id="email"
+              {...register("email")}
+              value={"ha@gmail.com"}
+            />
             {errors.email && (
               <ErrorMessage title={errors.email?.message} className="mt-3" />
             )}

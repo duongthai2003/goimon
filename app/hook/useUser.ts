@@ -1,32 +1,65 @@
 import HTTP from "@/lib/http";
+import { userLoginType, userRegisterType } from "@/lib/interface";
+import axios from "axios";
+// import { cookies } from "next/headers";
 
-interface UserState {
-  user: string; // Thay đổi kiểu dữ liệu nếu cần
-  fetchUser: () => Promise<void>;
-}
+const GetCurrentApi = async () => {
+  try {
+    const res = await HTTP.get("/account/me");
 
-import { create } from "zustand";
-
-// Tạo zustand store
-const getCurentUser = create<UserState>((set) => {
-  const fetchUser = async () => {
-    try {
-      const res = await HTTP.get("/account/me");
-      set({ user: res.data.data }); // Cập nhật trạng thái
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
-  // Gọi hàm fetchUser ngay lập tức
-  if (localStorage.getItem("accessToken")) {
-    fetchUser();
+    return res.data;
+  } catch (error) {
+    console.log("Error fetching user data:", error);
   }
+};
+// const as = async () => {
+//   return (await cookies()).delete("sessionToken");
+// };
 
-  return {
-    user: "", // Dữ liệu người dùng
-    fetchUser, // Giữ fetchUser như một hàm để có thể gọi lại
-  };
-});
+const LogoutApi = async () => {
+  try {
+    const res = await HTTP.post("/auth/logout");
 
-export { getCurentUser };
+    return res.data;
+  } catch (error) {
+    console.log("Error fetching user data:", error);
+  }
+};
+const RegisterApi = async (data: userRegisterType) => {
+  try {
+    const res = await HTTP.post("/auth/register", {
+      ...data,
+    });
+    localStorage.setItem("accessToken", res.data.data.token);
+
+    return res.data;
+  } catch (error) {
+    console.log("Error fetching user data:", error);
+  }
+};
+const LoginApi = async (data: userLoginType) => {
+  try {
+    const res = await HTTP.post("/auth/login", {
+      ...data,
+    });
+    // localStorage.setItem("accessToken", res.data.data.token);
+    console.log("22222", res.data);
+    const af = await axios.post(
+      "http://localhost:3000/api/auth",
+      {
+        ...res.data,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("22222", af);
+    return res.data;
+  } catch (error) {
+    console.log("Error fetching user data:", error);
+  }
+};
+
+export { GetCurrentApi, LogoutApi, RegisterApi, LoginApi };

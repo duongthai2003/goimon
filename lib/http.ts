@@ -2,10 +2,18 @@ import axios from "axios";
 
 const HTTP = axios.create({
   baseURL: process.env.NEXT_PUBLIC_ROOT_Api,
+  withCredentials: true,
 });
 
-HTTP.interceptors.request.use((req) => {
-  const token = localStorage.getItem("accessToken");
+HTTP.interceptors.request.use(async (req) => {
+  const cookieString = document.cookie;
+  const cookies = Object.fromEntries(
+    cookieString
+      .split("; ")
+      .map((cookie) => cookie.split("=").map(decodeURIComponent))
+  );
+  // const token = localStorage.getItem("accessToken");
+  const token = cookies["sessionToken"];
   if (token && req.headers) {
     req.headers["Authorization"] = `Bearer ${token}`;
   }
